@@ -25,7 +25,7 @@ const Page = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("asd");
-    dispatch(userLogin({ email, password }) as any);
+    await Promise.all([dispatch(await userLogin({ email, password }) as any)]);
     if (+userInfo.status === 200) router.push("/");
 
     console.log("Submitted email:", email);
@@ -43,7 +43,7 @@ const Page = () => {
           href="#"
           className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
         >
-          <Image
+          <img
             className="mr-2"
             src="https://i.postimg.cc/gkktttmX/unnamed.png"
             alt="logo"

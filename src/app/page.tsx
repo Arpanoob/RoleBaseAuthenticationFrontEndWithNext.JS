@@ -75,7 +75,7 @@ export default function Home() {
     if (selected === filters[0]) {
       dispatch(getApprovals(userInfo) as any);
     }
-  }, [selected, dispatch, userInfo, filters]);
+  }, [selected]);
 
   function handleInputChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -107,7 +107,7 @@ export default function Home() {
               ${index === 0 ? "!rounded-l-lg" : ""}
               ${
                 filter === selected
-                  ? "border-green-500 bg-green-700 text-white"
+                  ? "border-green-500 bg-green-900 text-white"
                   : ""
               }`}
             >
@@ -209,7 +209,7 @@ export default function Home() {
                         )}
                         {userInfo.user.role === Role.LEAD && (
                           <>
-                            <option value="employee">Employee</option>
+                            <option value="Employee">Employee</option>
                           </>
                         )}
                       </select>

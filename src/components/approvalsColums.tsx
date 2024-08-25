@@ -52,10 +52,12 @@ export const Appcolumns: ColumnDef<User>[] = [
       };
 
       const handleUpdateSalary = () => {
+        console.log(user);
         if (newSalary) {
           dispatch(
             updateSalary({
-              id: user.id as string,
+              id:
+                user.id || ((user as unknown as { _id: string })._id as string),
               salary: newSalary,
               role: user.role,
             }) as any

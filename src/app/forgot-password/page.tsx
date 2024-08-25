@@ -41,7 +41,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await fetch(process.env.PORT + "/auth/verify-otp", {
+      const response = await fetch("http://localhost:4000"+ "/auth/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

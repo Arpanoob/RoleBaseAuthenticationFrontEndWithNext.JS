@@ -1,10 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const ResetPassword = () => {
-  const router = useRouter();
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean | null>(null);
@@ -30,7 +28,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch(process.env.PORT+"/user/reset", { // Ensure the protocol is included
+      const response = await fetch("http://localhost:4000"+"/user/reset", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

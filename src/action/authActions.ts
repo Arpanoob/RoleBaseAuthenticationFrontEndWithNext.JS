@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const backendURL = "process.env.PORT";
+const backendURL = "http://localhost:4000";
 const instance = axios.create({ withCredentials: true, baseURL: backendURL });
 
 interface RegisterUserPayload {
@@ -141,12 +141,14 @@ export const addUser = createAsyncThunk(
 export const updateSalary = createAsyncThunk(
   "users/updateSalary",
   async (
-    { id, salary, role }: { id: string; salary: string; role: string },
+    { id, salary, role }: { id: string, salary: string, role: string },
     { rejectWithValue }
   ) => {
     try {
-      await instance.post("/user/update-salary", { userId: id, salary, role });
-      return { id, salary };
+      const userId=id;
+      console.log(salary,id,"poiu");
+      await instance.post("/user/update-salary", { userId, salary, role });
+      return { id, salary, role };
     } catch (error: any) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
