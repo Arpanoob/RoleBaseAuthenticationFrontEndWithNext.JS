@@ -42,7 +42,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/auth/verify-otp",
+        "https://roledaseauthenticatrionwithnestjs-lx61.onrender.com/auth/verify-otp",
         {
           method: "POST",
           headers: {
