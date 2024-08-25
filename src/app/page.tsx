@@ -1,113 +1,261 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { getUser, addUser, getApprovals } from "../action/authActions";
+import Profile from "@/components/profile";
+import { DataTable } from "@/components/dataTable";
+import { columns } from "@/components/colums";
+import { Appcolumns } from "@/components/approvalsColums";
+import Cookies from "js-cookie";
+
+import { Role } from "@/types/user";
+import { browser } from "process";
 
 export default function Home() {
+  const router = useRouter();
+  // console.log(Cookies.get('token'),"qw")
+  const { loading, userInfo, error, userList, approvals } = useSelector(
+    (state: any) => state.auth
+  );
+  //console.log(userInfo.user.role)
+  useEffect(() => {
+    if (+userInfo.status !== 200 || Cookies.get("token")) router.push("/login");
+  }, [userInfo.status, router]);
+  function getCookieExpiryDate(seconds: number) {
+    const date = new Date();
+    date.setTime(date.getTime() + seconds * 1000);
+    return `expires=${date.toUTCString()}`;
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      console.log("Interval running");
+
+      const cookieName = "token";
+      const cookieValue = "1sec";
+      const expiresInSeconds = 1; 
+      const expires = getCookieExpiryDate(expiresInSeconds);
+
+      document.cookie = `${cookieName}=${cookieValue}; path=/; ${expires}`;
+
+      const token = Cookies.get("token");
+      console.log("Current token:", token); 
+
+      if (token) {
+        console.log("Cookie found:", token);
+        router.push("/login");
+      }
+    }, 1000); 
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [router]);
+
+  const [selected, setSelected] = useState("Profile");
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    role: "",
+    salary: "",
+  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const filters = ["Approval", "Users", "Profile"];
+  const dispatch = useDispatch();
+
+  const toggleModal = () => setIsModalOpen(!isModalOpen); // Toggle function
+
+  useEffect(() => {
+    if (selected === filters[1]) {
+      dispatch(getUser(userInfo?.user) as any);
+    }
+    if (selected === filters[0]) {
+      dispatch(getApprovals(userInfo) as any);
+    }
+  }, [selected, dispatch, userInfo, filters]);
+
+  function handleInputChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  function handleAddUser(e: React.FormEvent) {
+    e.preventDefault();
+    console.log("Form Data:", formData); // Debugging: Ensure formData is correctly populated
+    dispatch(addUser(formData) as any);
+    toggleModal(); // Close modal after dispatch
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <div className="mt-6 overflow-hidden">
+      <div className="flex items-center justify-center fixed ml-[40%]">
+        <div className="inline-flex rounded-lg my-3 bg-gray-100 bg-opacity-30 mx-auto">
+          {filters.map((filter, index) => (
+            <button
+              key={filter}
+              onClick={() => setSelected(filter)}
+              className={`py-[10px] sm:py-2 my-1 px-[12px] sm:px-6 inline-flex items-center justify-center font-medium border border-gray-50 text-center focus:bg-primary text-black text-sm sm:text-base capitalize bg-white
+              ${index === filters.length - 1 ? "!rounded-r-lg" : ""}
+              ${index === 0 ? "!rounded-l-lg" : ""}
+              ${
+                filter === selected
+                  ? "border-green-500 bg-green-700 text-white"
+                  : ""
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className="min-h-screen mt-[100px] w-full overflow-hidden">
+        {selected === filters[2] && <Profile user={userInfo.user} />}
+        {selected === filters[1] && (
+          <>
+            {/* Add Button */}
+            <button
+              onClick={toggleModal}
+              className="w-12 h-12 mt-[25px] ml-[15px] fixed bg-green-500 text-white rounded-full flex items-center justify-center hover:bg-green-600 focus:outline-none"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            </button>
+
+            {/* DataTable */}
+            <div className="overflow-hidden">
+              <DataTable columns={columns} data={userList} />
+            </div>
+
+            {/* Modal */}
+            {isModalOpen && (
+              <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                <div className="bg-white rounded-lg p-6 w-96">
+                  <h2 className="text-xl font-semibold mb-4">Add New User</h2>
+                  <form onSubmit={handleAddUser}>
+                    {/* Name Field */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Enter name"
+                      />
+                    </div>
+
+                    {/* Email Field */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Enter email"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Role{userInfo.user.role}
+                      </label>
+                      <select
+                        name="role"
+                        value={formData.role}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                        <option value="">Select role</option>
+                        {userInfo.user.role === Role.ADMIN && (
+                          <>
+                            <option value="Lead">Lead</option>
+                            <option value="Employee">Employee</option>
+                            <option value="Manager">Manager</option>
+                          </>
+                        )}
+                        {userInfo.user.role === Role.MANAGER && (
+                          <>
+                            <option value="Employee">Employee</option>
+                            <option value="Lead">Lead</option>
+                          </>
+                        )}
+                        {userInfo.user.role === Role.LEAD && (
+                          <>
+                            <option value="employee">Employee</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+
+                    {/* Salary Field */}
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Salary
+                      </label>
+                      <input
+                        type="number"
+                        name="salary"
+                        value={formData.salary}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Enter salary"
+                      />
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        type="button"
+                        onClick={toggleModal}
+                        className="bg-gray-500 text-white py-2 px-4 rounded"
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-blue-500 text-white py-2 px-4 rounded"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+        {selected === filters[0] && (
+          <DataTable columns={Appcolumns} data={approvals} />
+        )}
       </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
