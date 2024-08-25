@@ -13,7 +13,7 @@ const ForgotPassword = () => {
   const handleSendOtp = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/auth/forgot-password",
+        "http://localhost:4000/auth/forgot-password",
         {
           method: "POST",
           headers: {
@@ -41,16 +41,13 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await fetch(
-        "https://roledaseauthenticatrionwithnestjs-lx61.onrender.com/auth/verify-otp",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, token:otp, newPassword }),
-        }
-      );
+      const response = await fetch(process.env.PORT + "/auth/verify-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, token: otp, newPassword }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to verify OTP or reset password");
@@ -89,7 +86,9 @@ const ForgotPassword = () => {
 
       {step === "otpReset" && (
         <div>
-          <h2 className="text-xl font-semibold mb-4">Verify OTP & Reset Password</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Verify OTP & Reset Password
+          </h2>
           <input
             type="text"
             value={otp}

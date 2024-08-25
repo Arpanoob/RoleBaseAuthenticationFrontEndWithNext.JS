@@ -30,7 +30,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch("https://roledaseauthenticatrionwithnestjs-lx61.onrender.com/user/reset", { // Ensure the protocol is included
+      const response = await fetch(process.env.PORT+"/user/reset", { // Ensure the protocol is included
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
