@@ -13,7 +13,7 @@ const ForgotPassword = () => {
   const handleSendOtp = async () => {
     try {
       const response = await fetch(
-        "http://localhost:4000/auth/forgot-password",
+        "https://roledaseauthenticatrionwithnestjs-lx61.onrender.com/auth/forgot-password",
         {
           method: "POST",
           headers: {
@@ -41,7 +41,7 @@ const ForgotPassword = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:4000"+ "/auth/verify-otp", {
+      const response = await fetch("https://roledaseauthenticatrionwithnestjs-lx61.onrender.com"+ "/auth/verify-otp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

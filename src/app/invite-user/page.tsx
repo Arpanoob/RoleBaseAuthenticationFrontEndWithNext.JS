@@ -28,7 +28,7 @@ const ResetPassword = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:4000"+"/user/reset", {
+      const response = await fetch("https://roledaseauthenticatrionwithnestjs-lx61.onrender.com"+"/user/reset", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
