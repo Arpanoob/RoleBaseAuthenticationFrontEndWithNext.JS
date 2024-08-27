@@ -8,7 +8,7 @@ import {
   updateSalary,
   logoutUser,
 } from "../action/authActions"; // Update with the correct path
-import { store } from "../app/store.ts/p";
+
 const initialState = {
   loading: false,
   userInfo: {},
@@ -47,6 +47,9 @@ const authSlice = createSlice({
     },
     setCredentials: (state, { payload }) => {
       state.userInfo = payload;
+    },
+    resetState: (state) => {
+      Object.assign(state, initialState); 
     },
   },
   extraReducers: (builder) => {
@@ -153,6 +156,7 @@ export const {
   loginFailure,
   logout,
   setCredentials,
+  resetState,
 } = authSlice.actions;
 
 export default authSlice.reducer;

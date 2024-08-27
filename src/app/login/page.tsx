@@ -6,6 +6,7 @@ import { userLogin } from "../../action/authActions";
 import { useRouter } from "next/navigation";
 import FullScreenLoader from "@/components/loading";
 import Image from "next/image";
+import { resetState } from "@/auth/auth-slice";
 
 const Page = () => {
   const [email, setEmail] = useState("");
@@ -22,6 +23,7 @@ const Page = () => {
     setPassword(e.target.value);
   };
 
+  useEffect(()=>{dispatch(resetState())},[])
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("asd");

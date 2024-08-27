@@ -11,7 +11,6 @@ import { Appcolumns } from "@/components/approvalsColums";
 import Cookies from "js-cookie";
 
 import { Role } from "@/types/user";
-import { browser } from "process";
 
 export default function Home() {
   const router = useRouter();
@@ -29,30 +28,30 @@ export default function Home() {
     return `expires=${date.toUTCString()}`;
   }
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      console.log("Interval running");
+  // useEffect(() => {
+  //   const intervalId = setInterval(() => {
+  //     console.log("Interval running");
 
-      const cookieName = "token";
-      const cookieValue = "1sec";
-      const expiresInSeconds = 1; 
-      const expires = getCookieExpiryDate(expiresInSeconds);
+  //     const cookieName = "token";
+  //     const cookieValue = "1sec";
+  //     const expiresInSeconds = 1; 
+  //     const expires = getCookieExpiryDate(expiresInSeconds);
 
-      document.cookie = `${cookieName}=${cookieValue}; path=/; ${expires}`;
+  //     document.cookie = `${cookieName}=${cookieValue}; path=/; ${expires}`;
 
-      const token = Cookies.get("token");
-      console.log("Current token:", token); 
+  //     const token = Cookies.get("token");
+  //     console.log("Current token:", token); 
 
-      if (token) {
-        console.log("Cookie found:", token);
-        router.push("/login");
-      }
-    }, 1000); 
+  //     if (token) {
+  //       console.log("Cookie found:", token);
+  //       router.push("/login");
+  //     }
+  //   }, 1000); 
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [router]);
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [router]);
 
   const [selected, setSelected] = useState("Profile");
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
