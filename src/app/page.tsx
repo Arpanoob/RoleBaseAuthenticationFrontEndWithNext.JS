@@ -11,7 +11,6 @@ import { Appcolumns } from "@/components/approvalsColums";
 import Cookies from "js-cookie";
 
 import { Role } from "@/types/user";
-import { browser } from "process";
 
 export default function Home() {
   const router = useRouter();
@@ -35,19 +34,19 @@ export default function Home() {
 
   //     const cookieName = "token";
   //     const cookieValue = "1sec";
-  //     const expiresInSeconds = 1; 
+  //     const expiresInSeconds = 1;
   //     const expires = getCookieExpiryDate(expiresInSeconds);
 
   //     document.cookie = `${cookieName}=${cookieValue}; path=/; ${expires}`;
 
   //     const token = Cookies.get("token");
-  //     console.log("Current token:", token); 
+  //     console.log("Current token:", token);
 
   //     if (token) {
   //       console.log("Cookie found:", token);
   //       router.push("/login");
   //     }
-  //   }, 1000); 
+  //   }, 1000);
 
   //   return () => {
   //     clearInterval(intervalId);

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-const backendURL = "https://roledaseauthenticatrionwithnestjs-lx61.onrender.com";
+const backendURL =
+  "https://roledaseauthenticatrionwithnestjs-lx61.onrender.com";
 const instance = axios.create({ withCredentials: true, baseURL: backendURL });
 
 interface RegisterUserPayload {
@@ -26,6 +27,8 @@ export const registerUser = createAsyncThunk(
       await instance.post("/user", { firstName, email, password }, config);
     } catch (error: any) {
       if (error.response && error.response.data.message) {
+        window.location.href = "/login";
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -51,6 +54,8 @@ export const userLogin = createAsyncThunk(
       return data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
+        window.location.href = "/login";
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -68,6 +73,8 @@ export const getApprovals = createAsyncThunk(
       return res.data.data.users;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
+        window.location.href = "/login";
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -84,6 +91,8 @@ export const getUser = createAsyncThunk(
       return res.data.data.users;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
+        window.location.href = "/login";
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -130,6 +139,8 @@ export const addUser = createAsyncThunk(
       return res.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
+        window.location.href = "/login";
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -141,16 +152,18 @@ export const addUser = createAsyncThunk(
 export const updateSalary = createAsyncThunk(
   "users/updateSalary",
   async (
-    { id, salary, role }: { id: string, salary: string, role: string },
+    { id, salary, role }: { id: string; salary: string; role: string },
     { rejectWithValue }
   ) => {
     try {
-      const userId=id;
-      console.log(salary,id,"poiu");
+      const userId = id;
+      console.log(salary, id, "poiu");
       await instance.post("/user/update-salary", { userId, salary, role });
       return { id, salary, role };
     } catch (error: any) {
       if (error.response && error.response.data.message) {
+        window.location.href = "/login";
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);
@@ -169,6 +182,8 @@ export const logoutUser = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       if (error.response && error.response.data.message) {
+        window.location.href = "/login";
+
         return rejectWithValue(error.response.data.message);
       } else {
         return rejectWithValue(error.message);

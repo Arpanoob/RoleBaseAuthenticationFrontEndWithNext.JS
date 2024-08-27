@@ -6,6 +6,7 @@ import { userLogin } from "../../action/authActions";
 import { useRouter } from "next/navigation";
 import FullScreenLoader from "@/components/loading";
 import Image from "next/image";
+import { resetState } from "@/auth/auth-slice";
 
 const Page = () => {
   const [email, setEmail] = useState("");
@@ -25,16 +26,18 @@ const Page = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("asd");
-    await Promise.all([dispatch(await userLogin({ email, password }) as any)]);
+    await Promise.all([
+      dispatch((await userLogin({ email, password })) as any),
+    ]);
     if (+userInfo.status === 200) router.push("/");
 
     console.log("Submitted email:", email);
     console.log("Submitted password:", password);
   };
 
-  // useEffect(() => {
-  //   if (+userInfo.status === 200) router.push("/");
-  // }, [userInfo.status, router]);
+  useEffect(() => {
+    dispatch(resetState());
+  }, []);
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900">
