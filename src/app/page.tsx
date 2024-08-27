@@ -106,7 +106,7 @@ export default function Home() {
               ${index === 0 ? "!rounded-l-lg" : ""}
               ${
                 filter === selected
-                  ? "border-green-500 bg-green-900 text-white"
+                  ? "border-green-500 bg-green-900 text-black"
                   : ""
               }`}
             >
